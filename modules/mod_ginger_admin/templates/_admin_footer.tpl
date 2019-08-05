@@ -5,3 +5,8 @@
         </footer>
     </div>
 </div>
+
+{# Chose for a js adding of class since we prefer not to overwrite the admin_base.tpl #}
+{% javascript %}
+    document.body.classList.add("{% if("dev"|environment) %}env--dev{% elseif("test"|environment) %}env--test{% elseif("acceptance"|environment) %}env--acc{% else %}env--prod{% endif %}");
+{% endjavascript %}

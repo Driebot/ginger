@@ -1,58 +1,13 @@
-// 'use strict';
-//
-// var gulp = require('gulp'),
-//     sass = require('gulp-sass'),
-//     postcss = require('gulp-postcss'),
-//     autoprefixer = require('autoprefixer'),
-//     lost = require('lost'),
-//     globbing = require('gulp-css-globbing');
-//
-// var paths = {
-//     cssSource: 'lib/css/src/',
-//     cssDestination: 'lib/css/mod_ginger_admin/'
-// };
-//
-// gulp.task('sass', function () {
-//     gulp.src(paths.cssSource + 'screen.scss')
-//     .pipe(globbing({ extensions: ['.scss'] }))
-//     .pipe(sass({
-//             outputStyle : 'compressed',
-//             errLogToConsole: true
-//         }))
-//     .on('error', handleError)
-//     .pipe(postcss([
-//         lost(),
-//         autoprefixer('last 2 versions', 'ie > 7')
-//     ]))
-//     .pipe(gulp.dest(paths.cssDestination));
-// });
-//
-// gulp.task('sass:watch', function () {
-//
-//
-//     var watchPaths = [
-//         paths.cssSource + '/**/*.scss'
-//     ]
-//
-//     gulp.watch(watchPaths, ['sass']);
-// });
-//
-// function handleError(e) {
-//     console.log('error...', e);
-// }
-//
-// gulp.task('default', ['sass', 'sass:watch']);
-
-
 const gulp = require('gulp');
 
 // Scss
 const sass = require('gulp-sass');
 const postcss = require('gulp-postcss');
-const autoprefixer = require('autoprefixer');
+const lost = require('lost');
 const globbing = require('gulp-css-globbing');
 
 // Javascript
+const babel = require('gulp-babel');
 const uglify = require('gulp-uglify');
 const rename = require('gulp-rename');
 
@@ -69,6 +24,8 @@ const paths = {
     modulesSrc: [],
     scssSrc: 'lib/css/src',
     scssDest: 'lib/css/mod_ginger_admin',
+    javascriptSrc: 'lib/js/src',
+    javascriptDest: 'lib/js/dist',
     templateSrc: 'templates'
 };
 
@@ -80,13 +37,38 @@ gulp.task('sass', () => {
     gulp.src(`${paths.scssSrc}/screen.scss`)
         .pipe(plumber())
         .pipe(globbing({ extensions: ['.scss'] }))
-        .pipe(sass({ outputStyle: 'compressed' }))
+        .pipe(sass({
+            outputStyle: 'compressed',
+            includePaths: [
+                '../../modules',
+                './ginger/modules',
+            ]
+        }))
         .on('error', sass.logError)
         .pipe(postcss([
-            autoprefixer('last 2 versions', 'ie > 7')
+            lost()
         ]))
         .pipe(gulp.dest(paths.scssDest))
         .pipe(livereload());
+});
+
+// Transpiles ES6 -> minifies -> renames javaScript
+gulp.task('js', () => {
+    gulp.src(`${paths.javascriptSrc}/**/*.js`)
+        .pipe(plumber())
+        .pipe(babel({
+            'presets': [
+                ['env', {
+                    'targets': {
+                        'browsers': ['last 2 versions']
+                    }
+                }]
+            ]
+        }))
+        .pipe(uglify())
+        .pipe(rename(path => path.basename += '.min'))
+        .pipe(gulp.dest(paths.javascriptDest))
+        .pipe(livereload())
 });
 
 // Init livereload server and watch scss, javascript and template files for changes
@@ -99,6 +81,7 @@ gulp.task('watch', () => {
 
     gulp.watch(scssCombinedPaths, ['sass']);
     gulp.watch(`${paths.templateSrc}/**/*.tpl`, ['tpl']);
+    gulp.watch(`${paths.javascriptSrc}/**/*.js`, ['js']);
 });
 
-gulp.task('default', ['sass', 'watch']);
+gulp.task('default', ['sass', 'js', 'watch']);

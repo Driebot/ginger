@@ -1,11 +1,11 @@
 a {
-    color: $orange; 
+    color: $orange;
 
     &:hover,
     &:active,
     &:focus,
     &:active:hover {
-        color: darken($orange, 10); 
+        color: darken($orange, 10);
     }
 }
 
@@ -13,7 +13,7 @@ a {
 	font-family: monospace;
 }
 
-.btn-primary, 
+.btn-primary,
 .btn.btn-primary {
     background: $orange;
     border: $orange;
@@ -22,7 +22,7 @@ a {
     &:focus,
     &:active,
     &:active:hover {
-        background: darken($orange, 10); 
+        background: darken($orange, 10);
         border-color: $orange;
     }
 }

@@ -1,13 +1,83 @@
+.env--prod .navbar.navbar-branded,
 .navbar.navbar-branded {
     background: $orange;
+    transition: background 0.3s;
+
+    .nav > li > a:hover,
+    .navbar-nav>.open>a {
+        background: $orange;
+    }
+
+    .dropdown-menu>li>a:hover {
+        background: $orange;
+    }
+}
+
+.env--dev {
+    .navbar.navbar-branded,
+    .navbar.navbar-branded .nav > li > a:hover,
+    .navbar.navbar-branded .nav > li > a:focus,
+    .navbar.navbar-branded .navbar-nav>.open>a {
+        background: #222;
+    }
+
+    .navbar.navbar-branded .dropdown-menu>li>a:hover {
+        background: #222;
+    }
+
+    .navbar.admin-navbar-fixed-save {
+        background: rgba(#222, 0.8);
+    }
+}
+
+.env--test {
+    .navbar.navbar-branded,
+    .navbar.navbar-branded .nav > li > a:hover,
+    .navbar.navbar-branded .nav > li > a:focus,
+    .navbar.navbar-branded .navbar-nav>.open>a {
+        background: #00A6BB;
+    }
+
+    .navbar.navbar-branded .dropdown-menu>li>a:hover {
+        background: #00A6BB;
+    }
+
+    .navbar.admin-navbar-fixed-save {
+        background: rgba(#00A6BB, 0.8);
+    }
+}
+
+.env--acc {
+    .navbar.navbar-branded,
+    .navbar.navbar-branded .nav > li > a:hover,
+    .navbar.navbar-branded .nav > li > a:focus,
+    .navbar.navbar-branded .navbar-nav>.open>a {
+        background: #97C93C;
+    }
+
+    .navbar.navbar-branded .dropdown-menu>li>a:hover {
+        background: #97C93C;
+    }
+
+    .navbar.admin-navbar-fixed-save {
+        background: rgba(#97C93C, 0.8);
+    }
+}
+
+.navbar.navbar-branded .collapse {
+    background: inherit;
+}
+
+.navbar.admin-navbar-fixed-save {
+    background: rgba(255,118,0, 0.8);
 }
 
 .navbar.navbar-branded .nav > li > a:hover,
 .navbar.navbar-branded .nav > li > a:focus,
 .navbar.navbar-branded .navbar-nav > .open > a,
 .navbar.navbar-branded .navbar-nav > .active > a,
-.dropdown-menu > li.active > a, 
-.dropdown-menu > li.active > a:hover, 
+.dropdown-menu > li.active > a,
+.dropdown-menu > li.active > a:hover,
 .dropdown-menu > li > a:hover {
     background: $orange;
 }
@@ -30,21 +100,9 @@
     border-bottom-color: $orange;
 }
 
-.navbar.navbar-branded .collapse.in .nav > .dropdown.open .dropdown-menu > li > a:hover {
-    background: $orange;
-}
-
-.navbar.admin-navbar-fixed-save {
-    background: rgba(255,118,0, 0.8);
-}
-
 .widget.widget-expanded .widget-header .widget-header-tools .z-btn-help,
 .widget.dark.widget-expanded .widget-header .widget-header-tools .z-btn-help {
     color: $orange;
-}
-
-.navbar.navbar-branded .collapse {
-    background: $orange;
 }
 
 .navbar-brand {
@@ -89,7 +147,7 @@
 @include mq(min-width, 768) {
     .navbar-form {
         width: 126px;
-    }    
+    }
 
     .navbar.navbar-branded .navbar-form .form-control {
     	width: 100%;

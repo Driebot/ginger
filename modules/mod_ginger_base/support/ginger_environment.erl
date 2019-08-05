@@ -5,6 +5,7 @@
 -export([
     get/1,
     is_dev/1,
+    is_test/1,
     is_acc/1,
     is_prod/1
 ]).
@@ -25,6 +26,9 @@ get(Context) ->
 
 is_dev(Context) ->
     match(".(test|ginger-test.driebit.net)$", Context).
+
+is_test(Context) ->
+    match(".(ginger-test.driebit.net)$", Context).
 
 is_acc(Context) ->
     match(".(ginger-acceptatie.driebit.net)$", Context).
