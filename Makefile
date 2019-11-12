@@ -29,6 +29,7 @@ help:
 	@echo "  shell                   Open Zotonic shell"
 	@echo "  psql                    Open PostgreSQL interactive terminal"
 	@echo "  start                   Run Zotonic on the host and all other services in containers"
+	@echo "  switch site=site-name   Switch Ginger and Zotonic to the versions declared by a site's .env file"
 	@echo "  test site=site-name     Run browser site tests in Docker container (args=Nightwatch arguments url=http://...)"
 	@echo "  test-chrome =site-name  Run browser site tests locally (args=Nightwatch arguments url=http://...)"
 	@echo "  tests                   Find all Ginger tests and run them"
@@ -87,6 +88,9 @@ start: up-support
 
 start-zotonic:
 	cd ${ZOTONIC}; bin/zotonic debug
+
+switch:
+	@source "sites/$(site)/.env"; git checkout $$GINGER_VERSION; cd ${ZOTONIC}; git checkout $$ZOTONIC_VERSION
 
 test:
 # Disconnect and reconnect the Ginger container to refresh the site alias (see docker-compose.yml).
