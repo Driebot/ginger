@@ -348,7 +348,7 @@ msgstr ""
 
 #: /vagrant/modules/mod_ginger_edit/actions/action_ginger_edit_dialog_open.erl:24
 msgid "You need to log on"
-msgstr "Je moet inloggen"
+msgstr "Log in of registreer"
 
 #: /vagrant/modules/mod_ginger_edit/templates/_logon_error.tpl:9
 msgid "Your new password is too short."
