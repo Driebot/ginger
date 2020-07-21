@@ -1,3 +1,5 @@
+ebin
+*~
 .DS_Store
 .vagrant
 data/*
