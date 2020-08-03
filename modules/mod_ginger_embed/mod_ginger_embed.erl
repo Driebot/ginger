@@ -20,8 +20,8 @@
 
 -include("zotonic.hrl").
 
-manage_schema(_Version, Context) ->
-    Datamodel = #datamodel{
+manage_schema(_Version, _Context) ->
+    #datamodel{
         categories=[
             {ginger_embed, media, [
                 {title, {trans, [
@@ -30,8 +30,7 @@ manage_schema(_Version, Context) ->
                 {language, [en, nl]}
             ]}
         ]
-    },
-    z_datamodel:manage(?MODULE, Datamodel, Context).
+    }.
 
 %% @doc Render embed template in case of <ginger-embed> element
 -spec observe_media_viewer(#media_viewer{}, #context{}) -> {ok, binary()} | undefined.

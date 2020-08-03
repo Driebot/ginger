@@ -23,7 +23,7 @@
 ]).
 
 manage_schema(_Version, Context) ->
-    Datamodel = #datamodel{
+    #datamodel{
         categories=[
             {remark, text, [
                 {title, {trans, [{nl, <<"Reactie">>},
@@ -54,8 +54,7 @@ manage_schema(_Version, Context) ->
                     {is_owner, true}
                 ]}
             ]}
-        ]},
-        z_datamodel:manage(?MODULE, Datamodel, Context).
+        ]}.
 
 is_owner(Id, #context{user_id=undefined, session_id=SessionId} = Context) ->
     case m_rsc:p_no_acl(Id, session_owner, Context) of

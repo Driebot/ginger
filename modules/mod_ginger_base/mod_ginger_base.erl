@@ -33,8 +33,8 @@ init(Context) ->
     z_pivot_rsc:define_custom_pivot(ginger_search, [{is_unfindable, "boolean not null default false"}], Context).
 
 %% @doc When ACL is enabled, create a default user in the editors group
-manage_schema(_Version, Context) ->
-    Datamodel = #datamodel{
+manage_schema(_Version, _Context) ->
+    #datamodel{
         categories=[
             {agenda, query, [
                 {title, {trans, [
@@ -168,9 +168,7 @@ manage_schema(_Version, Context) ->
                 ]}
             ]}
         ]
-    },
-    z_datamodel:manage(?MODULE, Datamodel, Context),
-    schema:create_identity_if_not_exists(editor_dev, "redacteur", "redacteur", Context).
+    }.
 
 %% @doc Users without access to the admin should not be able to view unpublished
 %%      resources

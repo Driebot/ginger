@@ -18,19 +18,21 @@
     event/2
 ]).
 
-manage_schema(install, Context) ->
-    Datamodel = #datamodel{
+manage_schema(install, _Context) ->
+    #datamodel{
         categories = [
-            {rfid_device, undefined, [{title, <<"RFID-scanner">>}]}
+            {rfid_device, undefined, [
+                {title, <<"RFID-scanner">>}
+            ]}
         ],
         predicates = [
-            {located_at, [{title, <<"Location">>}], [
+            {located_at, [
+                {title, <<"Location">>}
+            ], [
                 {rfid_device, location}
             ]}
         ]
-    },
-    z_datamodel:manage(?MODULE, Datamodel, Context),
-    ok.
+     }.
 
 %% @doc Link users to media in which they are depicted.
 -spec observe_tagger_action(#tagger_action{}, #context{}) -> ok.

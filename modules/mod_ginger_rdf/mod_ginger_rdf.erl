@@ -34,18 +34,8 @@
 -record(state, {context}).
 
 manage_schema(_, Context) ->
-    Datamodel = #datamodel{
-        categories=[
-            {rdf, meta, [{title, <<"RDF resource">>}]}
-        ],
-        resources=[
-            {rdf_content_group, content_group, [
-                {title, <<"RDF resources">>}
-            ]}
-        ]
-    },
-    z_datamodel:manage(?MODULE, Datamodel, Context),
-
+    %% TODO: Legacy code ahead! This function must not have side effects;
+    %% it should only return the data model.
     %% Update some predicates so they can refer to category RDF, too
     case m_rsc:uri_lookup("http://xmlns.com/foaf/0.1/depiction", Context) of
         undefined -> noop;
@@ -58,7 +48,17 @@ manage_schema(_, Context) ->
                 Context
             )
     end,
-    ok.
+    #datamodel{
+       categories=[
+           {rdf, meta, [
+                {title, <<"RDF resource">>}
+           ]}
+       ],
+       resources=[
+           {rdf_content_group, content_group, [
+                {title, <<"RDF resources">>}
+           ]}
+       ]}.
 
 %% @doc Ask observers to provide subject links from the resource and object
 %%      links to the resource

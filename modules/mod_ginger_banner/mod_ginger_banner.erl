@@ -13,13 +13,12 @@
     manage_schema/2
 ]).
 
-manage_schema(_Version, Context) ->
-    Datamodel = #datamodel{
+manage_schema(_Version, _Context) ->
+    #datamodel{
         resources = [
             {message_banner, text, [
                 {title, "Banner"},
                 {is_published, false}
             ]}
         ]
-    },
-    z_datamodel:manage(?MODULE, Datamodel, Context).
+    }.

@@ -15,8 +15,8 @@
     manage_schema/2
 ]).
 
-manage_schema(install, Context) ->
-    Datamodel = #datamodel{
+manage_schema(install, _Context) ->
+    #datamodel{
         categories=[
             {message, undefined, [
                 {is_unfindable, 1},
@@ -52,6 +52,4 @@ manage_schema(install, Context) ->
                 {message, category}
             ]}
         ]
-    },
-    z_datamodel:manage(?MODULE, Datamodel, Context),
-    ok.
+    }.
