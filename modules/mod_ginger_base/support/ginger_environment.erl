@@ -14,13 +14,20 @@
 %% @doc Get current environment
 -spec get(#context{}) -> dev|acc|prod.
 get(Context) ->
-    case is_dev(Context) of
-        true -> dev;
-        false ->
-            case is_acc(Context) of
-                true -> acc;
-                false -> prod
-            end
+    case z_config:get(environment) of
+        production ->
+            case is_dev(Context) of
+                true -> dev;
+                false ->
+                    case is_acc(Context) of
+                        true -> acc;
+                        false -> prod
+                    end
+            end;
+        acceptance ->
+            acc;
+        _ ->
+            dev
     end.
 
 is_dev(Context) ->
