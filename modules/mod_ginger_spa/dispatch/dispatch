@@ -1,3 +1,6 @@
 [{home, [], controller_template, [ {template, "page.tpl"}, {id, home} ]},
- {search, ["search"], controller_template, [ {template, "page.tpl"} ]}
+ {search, ["search"], controller_template, [ {template, "page.tpl"} ]},
+
+ % Render a template the path is the template, pass arguments via the query post or get
+ {spa_render, ["render-template", '*'], controller_ginger_spa_template, []}
 ].
