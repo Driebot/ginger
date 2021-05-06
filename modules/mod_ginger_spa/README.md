@@ -24,7 +24,7 @@ Pass arguments via the query string:
 
 Or in a POST body as `application/x-www-form-urlencoded` or `multipart/form-data`.
 
-Use the argument `is_cat_include=1` to render the template using a *catinclude*.
+Use the argument `catinclude=1` to render the template using a *catinclude*.
 Any `id` argument is always added as `id` to the template arguments (after mapping using `m_rsc:rid/2`), in
 this way the `id` is always available and usable for the optional catinclude.
 

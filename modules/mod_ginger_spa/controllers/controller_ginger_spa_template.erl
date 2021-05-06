@@ -49,7 +49,7 @@ render(Context) ->
                 {is_spa_render, true},
                 {id, m_rsc:rid(z_context:get_q("id", Context), Context)}
             ],
-            Template1 = case is_cat_include(Context) of
+            Template1 = case is_catinclude(Context) of
                 true -> {cat, Template};
                 false -> Template
             end,
@@ -60,8 +60,8 @@ render(Context) ->
             <<>>
     end.
 
-is_cat_include(Context) ->
-    z_convert:to_bool(z_context:get_q("is_cat_include", Context)).
+is_catinclude(Context) ->
+    z_convert:to_bool(z_context:get_q("catinclude", Context)).
 
 is_viewable("/" ++ _, _Context) -> false;
 is_viewable("public/" ++ _, _Context) -> true;
