@@ -42,9 +42,8 @@ provide_content(ReqData, Context) ->
     ?WM_REPLY(Result, Context1).
 
 render(Context) ->
-    Template = z_context:get_q("*", Context),
-    case is_viewable(Template, Context) of
-        true ->
+    case template(Context) of
+        {ok, Template} ->
             Vars = [
                 {is_spa_render, true},
                 {id, m_rsc:rid(z_context:get_q("id", Context), Context)}
@@ -55,15 +54,30 @@ render(Context) ->
             end,
             {Data, _} = z_template:render_to_iolist(Template1, Vars, Context),
             iolist_to_binary(Data);
-        false ->
-            lager:info("[~p] Denied render of template \"~s\"", [ z_context:site(Context), Template ]),
+        {error, _} ->
+            lager:info("[~p] Denied render of template \"~s\"", [ z_context:site(Context), m_req:get(path, Context) ]),
             <<>>
     end.
 
 is_catinclude(Context) ->
     z_convert:to_bool(z_context:get_q("catinclude", Context)).
 
-is_viewable("/" ++ _, _Context) -> false;
-is_viewable("public/" ++ _, _Context) -> true;
-is_viewable("member/" ++ _, Context) -> z_auth:is_auth(Context);
-is_viewable(T, Context) when is_list(T) -> z_acl:is_admin(Context).
+template(Context) ->
+    case z_context:get(template, Context) of
+        undefined ->
+            case path(Context) of
+                "api/render-template/" ++ Template ->
+                    {ok, drop_slash(Template)};
+                _ ->
+                    {error, enoent}
+            end;
+        Template ->
+            {ok, Template}
+    end.
+
+drop_slash("/" ++ Path) -> drop_slash(Path);
+drop_slash(Path) -> Path.
+
+path(Context) ->
+    DispatchPath = z_context:get_q("zotonic_dispatch_path", Context),
+    lists:flatten( z_utils:combine($/, DispatchPath) ).
