@@ -23,7 +23,10 @@ to_rdf(Id, Context) ->
 %%      - media.
 -spec to_rdf(m_rsc:resource(), [module()], z:context()) -> m_rdf:rdf_resource().
 to_rdf(Id, Ontologies, Context) ->
-    Properties = m_rsc:get_visible(Id, Context),
+    Properties = case m_rsc:get_visible(Id, Context) of
+        undefined -> [];
+        Props -> Props
+    end,
     Edges = m_edge:get_edges(Id, Context),
     Types = types(proplists:get_value(category_id, Properties), Context),
     Triples = lists:flatten(
