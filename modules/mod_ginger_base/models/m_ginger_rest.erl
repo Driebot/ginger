@@ -5,6 +5,8 @@
     rsc/2,
     with_edges/2,
     with_edges/3,
+    with_deep_edges/3,
+    parse_path/1,
     translations/2
 ]).
 
@@ -238,3 +240,72 @@ custom_block_props(Block, Context) ->
                     CustomPropsValues
             end
     end.
+
+
+%% @doc Add edges to resource based on depth path
+%%
+%% Examples:
+%% +-------------------+-----------------------------------------------+
+%% | Path              | Meaning                                       |
+%% +-------------------+-----------------------------------------------+
+%% | []                | Depth 0 (No edges)                            |
+%% | [[]]              | Depth 1, no filter (default)                  |
+%% | [[], []]          | Depth 2, no filter                            |
+%% | [[], [depiction]] | Depth 2, only depiction on second order edges |
+%% +-------------------+-----------------------------------------------+
+
+parse_path(String) ->
+    case erl_scan:string(String) of
+        {ok, Tokens, _} ->
+            case erl_parse:parse_term(Tokens ++ [{dot, 1}]) of
+                {ok, Path} ->
+                    case is_list(Path)
+                        andalso lists:all(fun is_list/1, Path)
+                        andalso lists:all(fun(Level) -> lists:all(fun is_atom/1, Level) end, Path) of
+                        true -> Path;
+                        _ -> [[]]
+                    end;
+                _ -> [[]]
+            end;
+        _ -> [[]]
+    end.
+
+with_deep_edges(Rsc, [], _Context) ->
+    Rsc;
+with_deep_edges(Rsc = #{<<"id">> := Id}, [[]|DeeperPredicates], Context) ->
+    Edges = lists:flatmap(
+              fun({Predicate, PredicateEdges}) ->
+                      [
+                       #{
+                        <<"predicate_name">> => Predicate,
+                        <<"resource">> =>
+                            with_deep_edges(
+                              m_ginger_rest:rsc(
+                                proplists:get_value(object_id, Edge),
+                                Context),
+                              DeeperPredicates, Context)
+                       } || Edge <- lists:reverse(PredicateEdges),
+                            m_rsc:is_visible(proplists:get_value(object_id, Edge), Context)
+                      ]
+              end,
+              m_edge:get_edges(Id, Context)),
+    Rsc#{<<"edges">> => Edges};
+with_deep_edges(Rsc = #{<<"id">> := Id}, [CurrentPredicates|DeeperPredicates], Context) ->
+    Edges = lists:flatmap(
+            fun(Predicate) ->
+                    #rsc_list{list = Objects} = m_rsc:o(Id, Predicate, Context),
+                    [
+                     #{
+                      <<"predicate_name">> => Predicate,
+                      <<"resource">> =>
+                          with_deep_edges(
+                            m_ginger_rest:rsc(Object, Context),
+                            DeeperPredicates,
+                            Context)
+                     } || Object <- Objects,
+                          m_rsc:is_visible(m_rsc:rid(Object, Context), Context)
+                    ]
+            end,
+              CurrentPredicates
+             ),
+    Rsc#{<<"edges">> => Edges}.
